@@ -27,7 +27,15 @@ Or install it yourself as:
 
 ## Usage
 
-See the `parser_test.rb` file.
+```
+require 'cremul_parser'
+
+parser = CremulParser.new
+parser.parse(File.open(<CREMUL-file>))
+
+```
+
+See the `parser_test.rb` file for more details.
 
 ## Copyright
 
