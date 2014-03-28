@@ -9,8 +9,8 @@ Gem::Specification.new do |gem|
   gem.platform      = Gem::Platform::RUBY
   gem.authors       = ["Per Spilling"]
   gem.email         = ["per@kodemaker.no"]
-  gem.summary       = %q{A Ruby parser for CREMUL payment transaction files}
-  gem.description   = %q{A Ruby parser for CREMUL payment transaction files}
+  gem.summary       = %q{A parser for CREMUL payment transaction files}
+  gem.description   = %q{A parser for CREMUL payment transaction files. It parses the CREMUL file and creates a Ruby object structure corresponding to the elements in the file.}
   gem.homepage      = "https://github.com/perspilling/cremul-parser"
   gem.license       = "MIT"
 
