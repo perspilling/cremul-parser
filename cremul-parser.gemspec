@@ -6,11 +6,12 @@ require 'cremul/version'
 Gem::Specification.new do |gem|
   gem.name          = "cremul-parser"
   gem.version       = Cremul::VERSION
+  gem.platform      = Gem::Platform::RUBY
   gem.authors       = ["Per Spilling"]
   gem.email         = ["per@kodemaker.no"]
-  gem.summary       = %q{A Ruby parser for CREMUL payment transaction files.}
-  gem.description   = %q{Based on the format specification from BSK: http://bsk.no/media/18244/CREMUL_BSK_v2_13_d96A-201112.pdf}
-  gem.homepage      = ""
+  gem.summary       = %q{A Ruby parser for CREMUL payment transaction files}
+  gem.description   = %q{A Ruby parser for CREMUL payment transaction files}
+  gem.homepage      = "https://github.com/perspilling/cremul-parser"
   gem.license       = "MIT"
 
   gem.files         = `git ls-files -z`.split("\x0")
