@@ -30,8 +30,10 @@ Or install it yourself as:
 ```
 require 'cremul_parser'
 
+f = File.open(<CREMUL-file>)
 parser = CremulParser.new
-parser.parse(File.open(<CREMUL-file>))
+parser.parse()
+f.close
 
 ```
 
