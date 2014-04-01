@@ -32,7 +32,7 @@ require 'cremul_parser'
 
 f = File.open(<CREMUL-file>)
 parser = CremulParser.new
-parser.parse()
+parser.parse(f)
 f.close
 
 ```
