@@ -11,11 +11,13 @@ class CremulParser
   def initialize
   end
 
-  def parse(file)
+  def parse(file, file_encoding='utf-8')
     file_as_a_string = ''
     file.each do |line|
-      line.encode(Encoding::UTF_8)
-      file_as_a_string += line.chop
+      unless file_encoding == 'utf-8'
+        line = line.encode('utf-8', file_encoding)
+      end
+      file_as_a_string += line.chomp # remove \n and \r from the end of the line
     end
     @segments = file_as_a_string.split("'")
     @msg = CremulMessage.new(@segments)

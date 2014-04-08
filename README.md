@@ -35,6 +35,13 @@ parser = CremulParser.new
 parser.parse(f)
 f.close
 
+# or if the file is not utf-8 encoded
+
+f = File.open(<CREMUL-file>)
+parser = CremulParser.new
+parser.parse(f, <encoding>) # for instance 'ISO-8859-1'
+f.close
+
 ```
 
 See the `parser_test.rb` file for more details.

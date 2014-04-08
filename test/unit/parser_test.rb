@@ -148,6 +148,19 @@ describe CremulParser do
 
     end
 
+    it 'should convert a non-utf-8 file to utf-8 on the fly' do
+      @parser.parse(File.open('files/CREMUL0001.dat'), 'ISO-8859-1')
+      @parser.segments.must_be_instance_of Array
+      @parser.msg.must_be_instance_of CremulMessage
+
+      msg = @parser.msg
+      line = msg.lines[0]
+      tx = line.transactions[0]
+      tx.must_be_instance_of CremulPaymentTx
+      tx.free_text.must_equal 'Tømrer Morten Rognebær AS'
+
+    end
+
 
   end
 
