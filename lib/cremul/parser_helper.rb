@@ -140,7 +140,7 @@ module Cremul
     end
 
     def line_count_segment_index(segments)
-      segments.index { |x| /CNT\+LI:\d/.match(x) }
+      segments.index { |x| /CNT\+LIN?:\d/.match(x) }
     end
 
     def number_of_lines_in_message(segments)

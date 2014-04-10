@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.4
+
+Added support for files using a CNT:LIN symbol instead of CNT:LI as the standard says.
+
 ## 0.0.3
 
 Added support for converting files to UTF-8 format on the fly.

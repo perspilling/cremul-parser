@@ -20,6 +20,9 @@ class CremulParser
       file_as_a_string += line.chomp # remove \n and \r from the end of the line
     end
     @segments = file_as_a_string.split("'")
+    if @segments[@segments.size-1].strip.empty?
+      @segments = @segments.slice(0, @segments.size-1)
+    end
     @msg = CremulMessage.new(@segments)
   end
 

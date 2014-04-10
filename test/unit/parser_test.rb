@@ -161,6 +161,20 @@ describe CremulParser do
 
     end
 
+    it 'should parse a file with a CNT:LIN symbol instead of CNT:LI as the standard says' do
+      @parser.parse(File.open('files/CREMUL0001_1.dat'), 'ISO-8859-1')
+      @parser.segments.must_be_instance_of Array
+      @parser.msg.must_be_instance_of CremulMessage
+
+      msg = @parser.msg
+      line = msg.lines[0]
+      tx = line.transactions[0]
+      tx.must_be_instance_of CremulPaymentTx
+      ref = tx.references[0]
+      ref.must_be_instance_of CremulReference
+      ref.type.must_equal :ACK
+      ref.number.must_equal 'E96151'
+    end
 
   end
 
