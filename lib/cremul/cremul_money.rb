@@ -9,8 +9,8 @@ class CremulMoney
 
   def initialize(money_segment)
     m = money_segment.split(':')
-
-    @amount = m[1].to_f
+    a = m[1].gsub(',', '.') # , is used as decimal mark
+    @amount = a.to_f
     if m.size == 3
       @currency = m[2].to_sym
     else
