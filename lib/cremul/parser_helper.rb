@@ -72,71 +72,66 @@ module Cremul
       segments.index { |x| /UNH.*/.match(x) }
     end
 
-    def next_date_segment_index(segments, start_pos)
-      index = segments[start_pos, segments.size].index { |x| /DTM.*/.match(x) }
-      index += start_pos unless index.nil?
+    def find_index_by_regex(segments, start_pos, end_pos=nil, regex)
+      if end_pos.nil?
+        end_pos = next_tx_sequence_segment_index(segments, start_pos+1)
+        if end_pos.nil? # no more segments
+          end_pos = segments.size
+        end
+      end
+      index = nil
+      unless end_pos.nil?
+        index = segments[start_pos, end_pos-start_pos].index { |x| regex.match(x) }
+        index += start_pos unless index.nil?
+      end
       index
     end
 
-    def next_amount_segment_index(segments, start_pos)
-      index = segments[start_pos, segments.size].index { |x| /MOA.*/.match(x) }
-      index += start_pos unless index.nil?
-      index
+    def next_date_segment_index(segments, start_pos, end_pos=nil)
+      find_index_by_regex(segments, start_pos, end_pos, /DTM.*/)
+    end
+
+    def next_amount_segment_index(segments, start_pos, end_pos=nil)
+      find_index_by_regex(segments, start_pos, end_pos, /MOA.*/)
     end
 
     def next_line_segment_index(segments, start_pos)
-      index = segments[start_pos, segments.size].index { |x| /LIN\+\d/.match(x) }
-      index += start_pos unless index.nil?
-      index
+      find_index_by_regex(segments, start_pos, segments.size, /LIN\+\d/)
     end
 
     def next_tx_sequence_segment_index(segments, start_pos)
-      index = segments[start_pos, segments.size].index { |x| /SEQ\+\+\d/.match(x) }
-      index += start_pos unless index.nil?
-      index
+      find_index_by_regex(segments, start_pos, segments.size, /SEQ\+\+\d/)
     end
 
-    def doc_segment_index(segments, start_pos)
-      index = segments[start_pos, segments.size].index { |x| /DOC.*/.match(x) }
-      index += start_pos unless index.nil?
-      index
+    def doc_segment_index(segments, start_pos, end_pos=nil)
+      find_index_by_regex(segments, start_pos, end_pos, /DOC.*/)
     end
 
-    def payment_details_segment_index(segments, start_pos)
-      index = segments[start_pos, segments.size].index { |x| /FTX\+PMD.*/.match(x) }
-      index += start_pos unless index.nil?
-      index
+    def payment_details_segment_index(segments, start_pos, end_pos=nil)
+      find_index_by_regex(segments, start_pos, end_pos, /FTX\+PMD.*/)
     end
 
     # Optional segment with free text info regarding the payment
-    def payment_advice_segment_index(segments, start_pos)
-      index = segments[start_pos, segments.size].index { |x| /FTX\+AAG.*/.match(x) }
-      index += start_pos unless index.nil?
-      index
+    def payment_advice_segment_index(segments, start_pos, end_pos=nil)
+      find_index_by_regex(segments, start_pos, end_pos, /FTX\+AAG.*/)
     end
 
-    def next_ref_segment_index(segments, start_pos)
-      index = segments[start_pos, segments.size].index { |x| /RFF.*/.match(x) }
-      index += start_pos unless index.nil?
-      index
+    def next_ref_segment_index(segments, start_pos, end_pos=nil)
+      find_index_by_regex(segments, start_pos, end_pos, /RFF.*/)
     end
 
-    def next_fii_bf_segment_index(segments, start_pos)
-      index = segments[start_pos, segments.size].index { |x| /FII\+BF.*/.match(x) }
-      index += start_pos unless index.nil?
-      index
+    # Bank account of beneficiary
+    def next_fii_bf_segment_index(segments, start_pos, end_pos=nil)
+      find_index_by_regex(segments, start_pos, end_pos, /FII\+BF.*/)
     end
 
-    def next_fii_or_segment_index(segments, start_pos)
-      index = segments[start_pos, segments.size].index { |x| /FII\+OR.*/.match(x) }
-      index += start_pos unless index.nil?
-      index
+    # Bank account of payer
+    def next_fii_or_segment_index(segments, start_pos, end_pos=nil)
+      find_index_by_regex(segments, start_pos, end_pos, /FII\+OR.*/)
     end
 
-    def next_nad_segment_index(segments, start_pos)
-      index = segments[start_pos, segments.size].index { |x| /NAD.*/.match(x) }
-      index += start_pos unless index.nil?
-      index
+    def next_nad_segment_index(segments, start_pos, end_pos=nil)
+      find_index_by_regex(segments, start_pos, end_pos, /NAD.*/)
     end
 
     def line_count_segment_index(segments)

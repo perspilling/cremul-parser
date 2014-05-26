@@ -2,7 +2,7 @@ require_relative '../test_helper'
 
 describe CremulParser do
 
-  describe 'parsing valid cremul files' do
+  describe 'parsing cremul files' do
     before do
       @parser = CremulParser.new
     end
@@ -108,7 +108,7 @@ describe CremulParser do
       line3.must_be_instance_of CremulLine
       line3.posting_date.must_equal d2011_01_11
       line3.money.must_be_instance_of CremulMoney
-      line3.money.amount.must_equal '6740,40'.to_f
+      line3.money.amount.must_equal '6740.40'.to_f
       line3.money.currency.must_equal :NOK
       line3.transactions.size.must_equal 2
 
@@ -161,6 +161,25 @@ describe CremulParser do
       tx.free_text.must_equal 'Tømrer Morten Rognebær AS'
 
     end
+
+    # the following test is commented out as the corresponding cremul test file is not included in the Git repo
+=begin
+    it 'should parse a long file with multiple payment transactions' do
+      @parser.parse(File.open('files/CREMUL0002_23-05-14.dat'), 'ISO-8859-1')
+      @parser.segments.must_be_instance_of Array
+      @parser.msg.must_be_instance_of CremulMessage
+
+      msg = @parser.msg
+
+      froland_tx = msg.lines[1].transactions[1]
+      froland_tx.must_be_instance_of CremulPaymentTx
+      froland_tx.free_text.must_include 'kr 3.384.686,- Fradrag kr.106:.408,- Beregn.g.lag kr.3.278.2          78,-'
+
+      braekstad_tx = msg.lines[2].transactions[0]
+      braekstad_tx.invoice_ref.must_equal '20140453869'
+    end
+=end
+
 
     # ----------------------------------------------------------------------
     # Some tests to handle file format errors (?) that we have encountered
