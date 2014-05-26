@@ -46,8 +46,6 @@ f.close
 
 See the `parser_test.rb` file for more details.
 
-## Version
-
 ## Copyright
 
 Copyright (c) 2014 Per Spilling (per@kodemaker.no). See LICENSE.txt for details.

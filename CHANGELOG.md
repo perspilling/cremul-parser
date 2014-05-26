@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.0.5
+
+- Refactored the ParserHelper to make it more DRY, and fixed a bug in CremulHeader regarding the parsing the 
+optional NAD-element in the header. 
+- Fixed a bug in CremulMoney which caused amounts with decimal mark to be parsed without the fractional part.
+- Fixed a bug in CremulPaymentTx related to parsing the FII+OR segment when it contains a payer 
+account holder name in addition to the account number.
+
 ## 0.0.4
 
 Added support for files using a CNT:LIN symbol instead of CNT:LI as the standard says.
