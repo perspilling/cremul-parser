@@ -41,6 +41,7 @@ describe CremulParser do
       tx.posting_date.must_equal d2014_03_12
       tx.money.amount.must_equal 1394.to_f
       tx.money.currency.must_equal :NOK
+      tx.payer_account_number.must_equal '12312312312'
       tx.references.size.must_equal 2
       tx.free_text.must_equal 'Tømrer Morten Rognebær AS'
 
@@ -160,6 +161,10 @@ describe CremulParser do
       tx.free_text.must_equal 'Tømrer Morten Rognebær AS'
 
     end
+
+    # ----------------------------------------------------------------------
+    # Some tests to handle file format errors (?) that we have encountered
+    # ----------------------------------------------------------------------
 
     it 'should parse a file with a CNT:LIN symbol instead of CNT:LI as the standard says' do
       @parser.parse(File.open('files/CREMUL0001_1.dat'), 'ISO-8859-1')

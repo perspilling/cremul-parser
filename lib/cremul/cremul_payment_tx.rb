@@ -18,7 +18,11 @@ class CremulPaymentTx
     @posting_date = Date.parse(s[1])
 
     s = segments[next_fii_or_segment_index(segments, tx_segment_pos)].split('+')
-    @payer_account_number = s[2]
+    if s[2].include? ':'
+      @payer_account_number = s[2].split(':')[0]  # the part after the : is the payer account holder name
+    else
+      @payer_account_number = s[2]
+    end
 
     init_invoice_ref(segments, tx_segment_pos)
     init_free_text(segments, tx_segment_pos)
