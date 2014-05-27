@@ -162,6 +162,33 @@ describe CremulParser do
 
     end
 
+    it 'should parse name and address correctly' do
+      @parser.parse(File.open('files/CREMUL0002-27.05.14.DAT'), 'ISO-8859-1')
+      @parser.segments.must_be_instance_of Array
+      @parser.msg.must_be_instance_of CremulMessage
+
+      msg = @parser.msg
+
+      tx = msg.lines[0].transactions[0]
+      tx.must_be_instance_of CremulPaymentTx
+      tx_payer = tx.payer_nad
+      tx_payer.must_be_instance_of CremulNameAndAddress
+      tx_payer.type.must_equal :PL
+      tx_payer.nad_lines[0].must_equal 'Ole Thomessen'
+      tx_payer.nad_lines[1].must_equal 'St. Nikolas-Gate 7'
+      tx_payer.nad_lines[3].must_equal '1706 SARPSBORG'
+    end
+
+    it 'should be able to parse this file' do
+      @parser.parse(File.open('files/CREMUL0001-27.05.14.DAT'), 'ISO-8859-1')
+      @parser.segments.must_be_instance_of Array
+      @parser.msg.must_be_instance_of CremulMessage
+
+      msg = @parser.msg
+      msg.header.must_be_instance_of CremulHeader
+      msg.header.msg_id.must_include 'CREMUL'
+    end
+
     # the following test is commented out as the corresponding cremul test file is not included in the Git repo
 =begin
     it 'should parse a long file with multiple payment transactions' do
