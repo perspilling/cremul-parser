@@ -1,8 +1,10 @@
 # cremul-parser gem
 
 This is a simple parser for CREMUL payment transaction files written in Ruby. It parses
-the CREMUL file (which should be in UTF-8 encoding) and creates a Ruby object structure
-corresponding to the elements in the file.
+the CREMUL file and creates a Ruby object structure corresponding to the elements in the file.
+
+The parser is currently not a complete parser for all kinds of CREMUl files, but is 
+being developed further as needed in an ongoing project for a Norwegian customer. 
 
 ## References
 

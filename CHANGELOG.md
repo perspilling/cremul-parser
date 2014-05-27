@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.0.6
+
+- Corrected a bug in CremulPaymentTx so that it is now able to handle empty FII segments.
+- Corrected a bug in CremulNameAndAddress so that it is now also able to handle addresses in structured form.
+
 ## 0.0.5
 
 - Refactored the ParserHelper to make it more DRY, and fixed a bug in CremulHeader regarding the parsing the 
