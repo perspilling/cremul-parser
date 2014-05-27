@@ -179,7 +179,7 @@ describe CremulParser do
       tx_payer.nad_lines[3].must_equal '1706 SARPSBORG'
     end
 
-    it 'should be able to parse this file' do
+    it 'should be able to parse a file with empty FII elements' do
       @parser.parse(File.open('files/CREMUL0001-27.05.14.DAT'), 'ISO-8859-1')
       @parser.segments.must_be_instance_of Array
       @parser.msg.must_be_instance_of CremulMessage
@@ -187,7 +187,9 @@ describe CremulParser do
       msg = @parser.msg
       msg.header.must_be_instance_of CremulHeader
       msg.header.msg_id.must_include 'CREMUL'
+      msg.lines[0].transactions[0].payer_account_number.must_be_nil
     end
+
 
     # the following test is commented out as the corresponding cremul test file is not included in the Git repo
 =begin

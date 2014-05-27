@@ -6,6 +6,16 @@ require_relative 'cremul_name_and_address'
 class CremulPaymentTx
   include Cremul::ParserHelper
 
+  # Normal format:
+  # FII+<party-id>+<account identification>
+  #
+  # Emtpy format (no bank account info given):
+  # FII+<party-id>
+  #
+  # Party-id:
+  # OR - Payor's bank account
+  # I2 - Beneficiary's bank account
+
   REF_TYPE_KID = 999 # Norwegian customer invoice reference
   REF_TYPE_INVOICE_NUMBER = 380
 
@@ -18,10 +28,12 @@ class CremulPaymentTx
     @posting_date = Date.parse(s[1])
 
     s = segments[next_fii_or_segment_index(segments, tx_segment_pos)].split('+')
-    if s[2].include? ':'
-      @payer_account_number = s[2].split(':')[0]  # the part after the : is the payer account holder name
-    else
-      @payer_account_number = s[2]
+    if s.size == 3 # bank account number is provided
+      if s[2].include? ':'
+        @payer_account_number = s[2].split(':')[0] # the part after the : is the payer account holder name
+      else
+        @payer_account_number = s[2]
+      end
     end
 
     init_invoice_ref(segments, tx_segment_pos)
