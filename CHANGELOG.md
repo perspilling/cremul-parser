@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.0
+
+Bumped to version 0.8.0 to indicate that it is getting close to finished as a 1.0 version.
+ 
+- Corrected a bug in the regular expressions
+- Added support for multiple CREMUL messages in a single file
+- Changed CremulParser.msg attr to CremulParser.messages (an array) 
+
 ## 0.0.6
 
 - Corrected a bug in CremulPaymentTx so that it is now able to handle empty FII segments.

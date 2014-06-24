@@ -1,4 +1,5 @@
 require_relative '../test_helper'
+require 'tempfile'
 
 describe CremulParser do
 
@@ -10,11 +11,12 @@ describe CremulParser do
     it 'should parse a valid cremul file with 1 line item' do
       @parser.parse(File.open('files/CREMUL0001-utf-8.txt'))
       @parser.segments.must_be_instance_of Array
-      @parser.msg.must_be_instance_of CremulMessage
+      @parser.messages.size.must_equal 1
+      @parser.messages[0].must_be_instance_of CremulMessage
 
       d2014_03_12 = Date.new(2014,3,12)
 
-      msg = @parser.msg
+      msg = @parser.messages[0]
       msg.header.must_be_instance_of CremulHeader
       msg.header.msg_id.must_include 'CREMUL'
       msg.header.created_date.must_equal d2014_03_12
@@ -65,11 +67,11 @@ describe CremulParser do
     it 'should parse a valid cremul file with multiple line items' do
       @parser.parse(File.open('files/cremul_multi_lines.txt'))
       @parser.segments.must_be_instance_of Array
-      @parser.msg.must_be_instance_of CremulMessage
+      @parser.messages[0].must_be_instance_of CremulMessage
 
       d2011_01_11 = Date.new(2011,1,11)
 
-      msg = @parser.msg
+      msg = @parser.messages[0]
       msg.header.must_be_instance_of CremulHeader
       msg.header.msg_id.must_include 'CREMUL'
       msg.header.created_date.must_equal d2011_01_11
@@ -117,11 +119,11 @@ describe CremulParser do
     it 'should parse a valid long cremul file' do
       @parser.parse(File.open('files/CREMUL0003-utf-8.txt'))
       @parser.segments.must_be_instance_of Array
-      @parser.msg.must_be_instance_of CremulMessage
+      @parser.messages[0].must_be_instance_of CremulMessage
 
       d2013_04_11 = Date.new(2013,4,11)
 
-      msg = @parser.msg
+      msg = @parser.messages[0]
       msg.header.must_be_instance_of CremulHeader
       msg.header.msg_id.must_include 'CREMUL'
       msg.header.created_date.must_equal d2013_04_11
@@ -152,9 +154,9 @@ describe CremulParser do
     it 'should convert a non-utf-8 file to utf-8 on the fly' do
       @parser.parse(File.open('files/CREMUL0001.dat'), 'ISO-8859-1')
       @parser.segments.must_be_instance_of Array
-      @parser.msg.must_be_instance_of CremulMessage
+      @parser.messages[0].must_be_instance_of CremulMessage
 
-      msg = @parser.msg
+      msg = @parser.messages[0]
       line = msg.lines[0]
       tx = line.transactions[0]
       tx.must_be_instance_of CremulPaymentTx
@@ -165,9 +167,9 @@ describe CremulParser do
     it 'should parse name and address correctly' do
       @parser.parse(File.open('files/CREMUL0002-27.05.14.DAT'), 'ISO-8859-1')
       @parser.segments.must_be_instance_of Array
-      @parser.msg.must_be_instance_of CremulMessage
+      @parser.messages[0].must_be_instance_of CremulMessage
 
-      msg = @parser.msg
+      msg = @parser.messages[0]
 
       tx = msg.lines[0].transactions[0]
       tx.must_be_instance_of CremulPaymentTx
@@ -182,23 +184,27 @@ describe CremulParser do
     it 'should be able to parse a file with empty FII elements' do
       @parser.parse(File.open('files/CREMUL0001-27.05.14.DAT'), 'ISO-8859-1')
       @parser.segments.must_be_instance_of Array
-      @parser.msg.must_be_instance_of CremulMessage
+      @parser.messages[0].must_be_instance_of CremulMessage
 
-      msg = @parser.msg
+      msg = @parser.messages[0]
       msg.header.must_be_instance_of CremulHeader
       msg.header.msg_id.must_include 'CREMUL'
       msg.lines[0].transactions[0].payer_account_number.must_be_nil
     end
 
 
-    # the following test is commented out as the corresponding cremul test file is not included in the Git repo
+    # ----------------------------------------------------------------------
+    # the following tests are commented out as the corresponding cremul test file is not included in the Git repo
+    # ----------------------------------------------------------------------
+
+
 =begin
     it 'should parse a long file with multiple payment transactions' do
       @parser.parse(File.open('files/CREMUL0002_23-05-14.dat'), 'ISO-8859-1')
       @parser.segments.must_be_instance_of Array
-      @parser.msg.must_be_instance_of CremulMessage
+      @parser.messages[0].must_be_instance_of CremulMessage
 
-      msg = @parser.msg
+      msg = @parser.messages[0]
 
       froland_tx = msg.lines[1].transactions[1]
       froland_tx.must_be_instance_of CremulPaymentTx
@@ -207,7 +213,25 @@ describe CremulParser do
       braekstad_tx = msg.lines[2].transactions[0]
       braekstad_tx.invoice_ref.must_equal '20140453869'
     end
+
+
+    it 'should parse a multi-message file' do
+      @parser.parse(File.open('files/CREMUL_multi_message.dat'), 'ISO-8859-1')
+      @parser.segments.must_be_instance_of Array
+      @parser.messages.size.must_equal 3
+      @parser.messages[0].must_be_instance_of CremulMessage
+
+      #write_segments_to_file(@parser.segments, File.open('files/CREMUL_multi_message_segments.txt', 'w'))
+    end
 =end
+
+    def write_segments_to_file(msg, file)
+      begin
+        msg.each { |segment| file.puts segment }
+      ensure
+        file.close
+      end
+    end
 
 
     # ----------------------------------------------------------------------
@@ -217,9 +241,9 @@ describe CremulParser do
     it 'should parse a file with a CNT:LIN symbol instead of CNT:LI as the standard says' do
       @parser.parse(File.open('files/CREMUL0001_1.dat'), 'ISO-8859-1')
       @parser.segments.must_be_instance_of Array
-      @parser.msg.must_be_instance_of CremulMessage
+      @parser.messages[0].must_be_instance_of CremulMessage
 
-      msg = @parser.msg
+      msg = @parser.messages[0]
       line = msg.lines[0]
       tx = line.transactions[0]
       tx.must_be_instance_of CremulPaymentTx

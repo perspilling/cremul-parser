@@ -69,7 +69,7 @@ module Cremul
     end
 
     def msg_id_segment_index(segments)
-      segments.index { |x| /UNH.*/.match(x) }
+      segments.index { |x| /^UNH.*/.match(x) }
     end
 
     def find_index_by_regex(segments, start_pos, end_pos=nil, regex)
@@ -88,54 +88,54 @@ module Cremul
     end
 
     def next_date_segment_index(segments, start_pos, end_pos=nil)
-      find_index_by_regex(segments, start_pos, end_pos, /DTM.*/)
+      find_index_by_regex(segments, start_pos, end_pos, /^DTM.*/)
     end
 
     def next_amount_segment_index(segments, start_pos, end_pos=nil)
-      find_index_by_regex(segments, start_pos, end_pos, /MOA.*/)
+      find_index_by_regex(segments, start_pos, end_pos, /^MOA.*/)
     end
 
     def next_line_segment_index(segments, start_pos)
-      find_index_by_regex(segments, start_pos, segments.size, /LIN\+\d/)
+      find_index_by_regex(segments, start_pos, segments.size, /^LIN\+\d/)
     end
 
     def next_tx_sequence_segment_index(segments, start_pos)
-      find_index_by_regex(segments, start_pos, segments.size, /SEQ\+\+\d/)
+      find_index_by_regex(segments, start_pos, segments.size, /^SEQ\+\+\d/)
     end
 
     def doc_segment_index(segments, start_pos, end_pos=nil)
-      find_index_by_regex(segments, start_pos, end_pos, /DOC.*/)
+      find_index_by_regex(segments, start_pos, end_pos, /^DOC.*/)
     end
 
     def payment_details_segment_index(segments, start_pos, end_pos=nil)
-      find_index_by_regex(segments, start_pos, end_pos, /FTX\+PMD.*/)
+      find_index_by_regex(segments, start_pos, end_pos, /^FTX\+PMD.*/)
     end
 
     # Optional segment with free text info regarding the payment
     def payment_advice_segment_index(segments, start_pos, end_pos=nil)
-      find_index_by_regex(segments, start_pos, end_pos, /FTX\+AAG.*/)
+      find_index_by_regex(segments, start_pos, end_pos, /^FTX\+AAG.*/)
     end
 
     def next_ref_segment_index(segments, start_pos, end_pos=nil)
-      find_index_by_regex(segments, start_pos, end_pos, /RFF.*/)
+      find_index_by_regex(segments, start_pos, end_pos, /^RFF.*/)
     end
 
     # Bank account of beneficiary
     def next_fii_bf_segment_index(segments, start_pos, end_pos=nil)
-      find_index_by_regex(segments, start_pos, end_pos, /FII\+BF.*/)
+      find_index_by_regex(segments, start_pos, end_pos, /^FII\+BF.*/)
     end
 
     # Bank account of payer
     def next_fii_or_segment_index(segments, start_pos, end_pos=nil)
-      find_index_by_regex(segments, start_pos, end_pos, /FII\+OR.*/)
+      find_index_by_regex(segments, start_pos, end_pos, /^FII\+OR.*/)
     end
 
     def next_nad_segment_index(segments, start_pos, end_pos=nil)
-      find_index_by_regex(segments, start_pos, end_pos, /NAD.*/)
+      find_index_by_regex(segments, start_pos, end_pos, /^NAD.*/)
     end
 
     def line_count_segment_index(segments)
-      segments.index { |x| /CNT\+LIN?:\d/.match(x) }
+      segments.index { |x| /^CNT\+LIN?:\d/.match(x) }
     end
 
     def number_of_lines_in_message(segments)
@@ -182,6 +182,19 @@ module Cremul
       end
       n
     end
+
+    def number_of_messages_in_file(segments)
+      m = {}
+      n = 0
+      segments.each_index do |i|
+        if /^UNA.*/.match(segments[i])
+          n += 1
+          m[n] = i
+        end
+      end
+      m
+    end
+
 
     def last_segment_index_in_tx(segments, tx_segment_pos)
       next_tx_index = next_tx_sequence_segment_index(segments, tx_segment_pos+1)
