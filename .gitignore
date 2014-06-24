@@ -16,4 +16,7 @@ spec/reports
 test/tmp
 test/version_tmp
 tmp
+.DS_Store
 CREMUL0002_23-05-14.DAT
+CREMUL_multi_message.DAT
+CREMUL_multi_message_segments.txt
