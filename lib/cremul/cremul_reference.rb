@@ -4,9 +4,9 @@ require_relative 'parser_helper'
 # Represents a reference (RFF) segment in a CREMUL message.
 # Type may be:
 # - :ACK - Bank reference - KID in Norwegian
-# - :AII - Bank’s reference number allocated by the bank to different underlaying individual transactions
+# - :AII - Bank’s reference number allocated by the bank to different underlying individual transactions
 # - :CT - AutoGiro agreement ID
-# - :ABO - Originator´s reference – for excample SWIFT reference senders bank
+# - :ABO - Originator´s reference – for example SWIFT reference senders bank
 # - :ACD - Bank reference = Archive reference
 # - :AEK - Payment order number
 # - :AFO - Beneficiary’s reference
