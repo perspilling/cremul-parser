@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.9.0
+
+Added index numbers to CremulMessage, CremulLine and CremulPaymentTx. The hash of the file +
+the index numbers can be used to create unique ids for each payment transaction. This can be
+useful for instance when importing a large Cremul file into a database when you want to make
+sure that none of the transactions have already been imported.
+
 ## 0.8.0
 
 Bumped to version 0.8.0 to indicate that it is getting close to finished as a 1.0 version.
