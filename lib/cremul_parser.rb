@@ -33,17 +33,6 @@ class CremulParser
     @logger = logger
   end
 
-  formatter = Proc.new{|severity, time, progname, msg|
-    formatted_severity = sprintf("%-5s",severity.to_s)
-    formatted_time = time.strftime("%Y-%m-%d %H:%M:%S")
-    "[#{formatted_severity} #{formatted_time} #{$$}] CremulParser: file=#{@filename}, #{msg.to_s.strip}\n"
-  }
-  @logger.formatter = formatter
-
-  def self.formatter=(formatter)
-    @logger.formatter = formatter
-  end
-
   @filename = nil
 
   def self.filename
@@ -59,6 +48,14 @@ class CremulParser
   attr_reader :segments, :messages
 
   def initialize
+    unless defined?(Rails) || defined?(RAILS_DEFAULT_LOGGER)
+      formatter = Proc.new { |severity, time, progname, msg|
+        formatted_severity = sprintf("%-5s", severity.to_s)
+        formatted_time = time.strftime("%Y-%m-%d %H:%M:%S")
+        "[#{formatted_severity} #{formatted_time} #{$$}] #{msg.to_s.strip}\n"
+      }
+      self.class.logger.formatter = formatter
+    end
     @messages = []
   end
 
@@ -85,7 +82,7 @@ class CremulParser
       raise 'No CREMUL message found in file'
     end
     m.each do |n, start_index|
-      CremulParser.logger.info "parsing message #{n}"
+      CremulParser.logger.info "CremulParser: file=#{CremulParser.filename}, parsing message #{n}"
       if n < m.size
         @messages << CremulMessage.new(n, @segments[start_index, m[n+1] - start_index])
       else

@@ -26,7 +26,7 @@ class CremulLine
     tx_index = next_tx_sequence_segment_index(segments, line_segment_pos)
 
     n.times do |i|
-      CremulParser.logger.info "parsing tx #{i+1}"
+      CremulParser.logger.info "CremulParser: file=#{CremulParser.filename}, parsing tx #{i+1}"
       @transactions << CremulPaymentTx.new(i+1, segments, tx_index)
       tx_index = next_tx_sequence_segment_index(segments, tx_index+1)
     end

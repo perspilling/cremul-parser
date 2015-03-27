@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.3
+
+Fixed an error related to logging when used in Rails.
+
 ## 0.9.2
 
 Added logging with default settings that may be overridden. In a Rails environment it will default use
