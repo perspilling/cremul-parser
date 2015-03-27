@@ -5,17 +5,19 @@ require_relative 'parser_helper'
 class CremulMessage
   include Cremul::ParserHelper
 
-  attr_reader :header, :number_of_lines, :lines
+  # The message_index is the index number of the Cremul message in the file.
+  attr_reader :message_index, :header, :number_of_lines, :lines
 
-  def initialize(segments)
+  def initialize(message_number, segments)
+    @message_index = message_number
     @header = CremulHeader.new(segments)
     @lines = []
     @number_of_lines = number_of_lines_in_message(segments)
 
     # instantiate the line items
     line_segment_pos = next_line_segment_index(segments, 0)
-    @number_of_lines.times do
-      @lines << CremulLine.new(segments, line_segment_pos)
+    @number_of_lines.times do |n|
+      @lines << CremulLine.new(n+1, segments, line_segment_pos)
       line_segment_pos = next_line_segment_index(segments, line_segment_pos+1)
     end
 

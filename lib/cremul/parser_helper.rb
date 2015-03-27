@@ -183,7 +183,7 @@ module Cremul
       n
     end
 
-    def number_of_messages_in_file(segments)
+    def get_messages_in_file(segments)
       m = {}
       n = 0
       segments.each_index do |i|

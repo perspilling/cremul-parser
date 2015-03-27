@@ -3,6 +3,14 @@
 require_relative 'cremul/parser_helper'
 require_relative 'cremul/cremul_message'
 
+
+#
+# A file may contain one or more Cremul messages. A Cremul message consists of 'message segments'.
+# Each segment starts with a Cremul keyword. A group of segments make up a logical element of the
+# Cremul message. The overall logical structure of a Cremul message is as follows:
+#
+# [ Cremul message ] 1 --- * [ Line ] 1 --- * [ Payment TX ]
+#
 class CremulParser
   include Cremul::ParserHelper
 
@@ -12,6 +20,7 @@ class CremulParser
     @messages = []
   end
 
+  # noinspection RubyResolve
   def parse(file, file_encoding='utf-8')
     file_as_a_string = ''
     file.each do |line|
@@ -27,15 +36,15 @@ class CremulParser
       @segments = @segments.slice(0, @segments.size-1)
     end
 
-    m = number_of_messages_in_file(@segments)
+    m = get_messages_in_file(@segments)
     if m.size == 0
       raise 'No CREMUL message found in file'
     end
     m.each do |n, start_index|
       if n < m.size
-        @messages << CremulMessage.new(@segments[start_index, m[n+1] - start_index])
+        @messages << CremulMessage.new(n, @segments[start_index, m[n+1] - start_index])
       else
-        @messages << CremulMessage.new(@segments[start_index, @segments.size - start_index])
+        @messages << CremulMessage.new(n, @segments[start_index, @segments.size - start_index])
       end
     end
   end

@@ -20,10 +20,11 @@ class CremulPaymentTx
   REF_TYPE_INVOICE_NUMBER = 380
 
   attr_reader :posting_date, :money, :references, :invoice_ref_type, :invoice_ref, :free_text
-  attr_reader :payer_account_number, :payer_nad, :beneficiary_nad
+  attr_reader :payer_account_number, :payer_nad, :beneficiary_nad, :tx_index
 
 
-  def initialize(segments, tx_segment_pos)
+  def initialize(tx_index, segments, tx_segment_pos)
+    @tx_index = tx_index  # the index number of this tx within it's parent line
     s = segments[next_date_segment_index(segments, tx_segment_pos)].split(':')
     @posting_date = Date.parse(s[1])
 

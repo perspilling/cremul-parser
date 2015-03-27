@@ -9,9 +9,10 @@ require_relative 'cremul_payment_tx'
 class CremulLine
   include Cremul::ParserHelper
 
-  attr_reader :posting_date, :money, :reference, :bf_account_number, :transactions
+  attr_reader :line_index, :posting_date, :money, :reference, :bf_account_number, :transactions
 
-  def initialize(segments, line_segment_pos)
+  def initialize(line_index, segments, line_segment_pos)
+    @line_index = line_index
     d = segments[next_date_segment_index(segments, line_segment_pos)].split(':')
     @posting_date = Date.parse(d[1])
 
@@ -23,8 +24,9 @@ class CremulLine
     @transactions = []
     n = number_of_transactions_in_line(segments, line_segment_pos)
     tx_index = next_tx_sequence_segment_index(segments, line_segment_pos)
-    n.times do
-      @transactions << CremulPaymentTx.new(segments, tx_index)
+
+    n.times do |i|
+      @transactions << CremulPaymentTx.new(i+1, segments, tx_index)
       tx_index = next_tx_sequence_segment_index(segments, tx_index+1)
     end
 

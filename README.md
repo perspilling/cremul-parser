@@ -36,14 +36,23 @@ f = File.open(<CREMUL-file>)
 parser = CremulParser.new
 parser.parse(f)
 f.close
+```
 
-# or if the file is not utf-8 encoded
+or if the file is not utf-8 encoded
 
+```
 f = File.open(<CREMUL-file>)
 parser = CremulParser.new
 parser.parse(f, <encoding>) # for instance 'ISO-8859-1'
 f.close
+```
 
+A file may contain one or more Cremul messages. A Cremul message consists of 'message segments'.
+Each segment starts with a Cremul keyword. A group of segments make up a logical element of the
+Cremul message. The overall logical structure of a Cremul file is as follows:
+
+```
+ [ Cremul file ] 1 --- * [ Cremul message ] 1 --- * [ Line ] 1 --- * [ Payment TX ]
 ```
 
 See the `parser_test.rb` file for more details.

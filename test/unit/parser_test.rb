@@ -17,6 +17,7 @@ describe CremulParser do
       d2014_03_12 = Date.new(2014,3,12)
 
       msg = @parser.messages[0]
+      msg.message_index.must_equal 1
       msg.header.must_be_instance_of CremulHeader
       msg.header.msg_id.must_include 'CREMUL'
       msg.header.created_date.must_equal d2014_03_12
@@ -26,6 +27,7 @@ describe CremulParser do
 
       line = msg.lines[0]
       line.must_be_instance_of CremulLine
+      line.line_index.must_equal 1
       line.posting_date.must_equal d2014_03_12
       line.bf_account_number.must_equal '12121212121'
       line.money.must_be_instance_of CremulMoney
@@ -40,6 +42,7 @@ describe CremulParser do
       line.transactions.size.must_equal 1
       tx = line.transactions[0]
       tx.must_be_instance_of CremulPaymentTx
+      tx.tx_index.must_equal 1
       tx.posting_date.must_equal d2014_03_12
       tx.money.amount.must_equal 1394.to_f
       tx.money.currency.must_equal :NOK
@@ -213,6 +216,7 @@ describe CremulParser do
       braekstad_tx = msg.lines[2].transactions[0]
       braekstad_tx.invoice_ref.must_equal '20140453869'
     end
+=end
 
 
     it 'should parse a multi-message file' do
@@ -223,7 +227,6 @@ describe CremulParser do
 
       #write_segments_to_file(@parser.segments, File.open('files/CREMUL_multi_message_segments.txt', 'w'))
     end
-=end
 
     def write_segments_to_file(msg, file)
       begin
