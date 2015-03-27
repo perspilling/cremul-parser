@@ -8,6 +8,10 @@ describe CremulParser do
       @parser = CremulParser.new
     end
 
+    it 'should initialize a logger' do
+      CremulParser.logger.must_be_instance_of Logger
+    end
+
     it 'should parse a valid cremul file with 1 line item' do
       @parser.parse(File.open('files/CREMUL0001-utf-8.txt'))
       @parser.segments.must_be_instance_of Array

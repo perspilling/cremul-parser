@@ -1,5 +1,6 @@
 # encoding: UTF-8
 
+require 'logger'
 require_relative 'cremul/parser_helper'
 require_relative 'cremul/cremul_message'
 
@@ -14,6 +15,47 @@ require_relative 'cremul/cremul_message'
 class CremulParser
   include Cremul::ParserHelper
 
+  # ----------- class attributes and methods -----------
+
+  @logger = if defined?(Rails)
+              Rails.logger
+            elsif defined?(RAILS_DEFAULT_LOGGER)
+              RAILS_DEFAULT_LOGGER
+            else
+              Logger.new(STDOUT)
+            end
+
+  def self.logger
+    @logger
+  end
+
+  def self.logger=(logger)
+    @logger = logger
+  end
+
+  formatter = Proc.new{|severity, time, progname, msg|
+    formatted_severity = sprintf("%-5s",severity.to_s)
+    formatted_time = time.strftime("%Y-%m-%d %H:%M:%S")
+    "[#{formatted_severity} #{formatted_time} #{$$}] CremulParser: file=#{@filename}, #{msg.to_s.strip}\n"
+  }
+  @logger.formatter = formatter
+
+  def self.formatter=(formatter)
+    @logger.formatter = formatter
+  end
+
+  @filename = nil
+
+  def self.filename
+    @filename
+  end
+
+  def self.filename=(filename)
+    @filename = filename
+  end
+
+  # ----------- instance attributes and methods -----------
+
   attr_reader :segments, :messages
 
   def initialize
@@ -22,6 +64,8 @@ class CremulParser
 
   # noinspection RubyResolve
   def parse(file, file_encoding='utf-8')
+    self.class.filename = File.basename(file.path)
+
     file_as_a_string = ''
     file.each do |line|
       unless file_encoding == 'utf-8'
@@ -41,6 +85,7 @@ class CremulParser
       raise 'No CREMUL message found in file'
     end
     m.each do |n, start_index|
+      CremulParser.logger.info "parsing message #{n}"
       if n < m.size
         @messages << CremulMessage.new(n, @segments[start_index, m[n+1] - start_index])
       else

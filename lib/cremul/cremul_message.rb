@@ -17,6 +17,7 @@ class CremulMessage
     # instantiate the line items
     line_segment_pos = next_line_segment_index(segments, 0)
     @number_of_lines.times do |n|
+      CremulParser.logger.info "parsing line #{n+1}"
       @lines << CremulLine.new(n+1, segments, line_segment_pos)
       line_segment_pos = next_line_segment_index(segments, line_segment_pos+1)
     end

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.2
+
+Added logging with default settings that may be overridden. In a Rails environment it will default use
+the Rails logger.
+
+## 0.9.1
+
+Pushed a new version because I got an error message when pushing version 0.9.0...
+
 ## 0.9.0
 
 Added index numbers to CremulMessage, CremulLine and CremulPaymentTx. The hash of the file +
