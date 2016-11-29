@@ -70,6 +70,7 @@ class CremulParser
       end
       file_as_a_string += line.chomp # remove \n and \r from the end of the line
     end
+    @cremul_file_hash = CremulParser::get_file_hash_value(file)
     @segments = file_as_a_string.split("'")
     @segments.each { |s| s.strip! }
     # remove last segment if it is an empty string
@@ -89,6 +90,46 @@ class CremulParser
         @messages << CremulMessage.new(n, @segments[start_index, @segments.size - start_index])
       end
     end
+  end
+
+  # Returns a unique hash value for the file. Can be used to check if the file has been read before.
+  def self.get_file_hash_value(file)
+    cremul_file_hash = Digest::MD5.hexdigest(file.read)
+    file.rewind
+    cremul_file_hash
+  end
+
+  # Writes the parsed Cremul-file to a CSV-file.
+  def to_csv_file(csv_filename, decimal_separator=',')
+    File.open(csv_filename, 'w') do |csv_file|
+      csv_file.puts 'tx_id;posting_date;amount;currency;payer_account_number;invoice_ref_type;invoice_ref;free_text;payer name and address'
+      @messages.each do |cremul_msg|
+        cremul_msg.lines.each do |cremul_msg_line|
+          cremul_msg_line.transactions.each do |cremul_tx|
+            tx_index = create_unique_tx_index(cremul_msg, cremul_msg_line, cremul_tx)
+            csv_file.puts to_csv(tx_index, cremul_tx, decimal_separator)
+          end
+        end
+      end
+    end
+
+  end
+
+  # Creates a unique id for each TX in the file
+  def create_unique_tx_index(cremul_msg, cremul_msg_line, cremul_tx)
+    file_hash = @cremul_file_hash[0, 8].force_encoding('utf-8')
+    "#{file_hash}:msg#{cremul_msg.message_index}:line#{cremul_msg_line.line_index}:tx#{cremul_tx.tx_index}"
+  end
+
+  private
+
+  def tx_id(cremul_msg, cremul_msg_line, cremul_tx)
+    "M#{cremul_msg.message_index}.L#{cremul_msg_line.line_index}.TX#{cremul_tx.tx_index}"
+  end
+
+
+  def to_csv(tx_id, cremul_tx, decimal_separator)
+    "#{tx_id};" + cremul_tx.to_csv(decimal_separator)
   end
 
 end

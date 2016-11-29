@@ -10,7 +10,8 @@ Gem::Specification.new do |gem|
   gem.authors       = ["Per Spilling"]
   gem.email         = ["per@perspilling.net"]
   gem.summary       = %q{A parser for CREMUL payment transaction files}
-  gem.description   = %q{A parser for CREMUL payment transaction files. It parses the CREMUL file and creates a Ruby object structure corresponding to the elements in the file.}
+  gem.description   = %q{A parser for CREMUL payment transaction files. It parses the CREMUL file and creates a Ruby
+object structure corresponding to the elements in the file. Also supports converting a CREMUL fil to a CSV file format.}
   gem.homepage      = "https://github.com/perspilling/cremul-parser"
   gem.license       = "MIT"
 

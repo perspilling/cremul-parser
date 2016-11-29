@@ -46,6 +46,15 @@ class CremulPaymentTx
     init_name_and_addresses(segments, tx_segment_pos)
   end
 
+  def to_csv(decimal_separator)
+    if decimal_separator == ','
+      amount = @money.amount.to_s.gsub('.', ',')
+    else
+      amount = @money.amount.to_s
+    end
+    "#{@posting_date};#{amount};#{@money.currency};#{@payer_account_number};#{invoice_ref_type};#{invoice_ref};#{free_text};#{@payer_nad.to_csv}"
+  end
+
   private
 
   def init_free_text(segments, tx_segment_pos)

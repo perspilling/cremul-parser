@@ -27,13 +27,18 @@ class CremulNameAndAddress
     @nad_lines = []
     if s.size <= 5 # structured form
       addr = s[s.size-1].split(':')
-      addr.size.times do |i|
-        @nad_lines << addr[i]
-      end
+      addr.each { |l| @nad_lines << l }
     else
       5.times do |i|
         @nad_lines << s[i+4]
       end
     end
   end
+
+  def to_csv
+    csv = ''
+    @nad_lines.each { |l| csv << l << ',' }
+    csv.chomp(',')
+  end
+
 end

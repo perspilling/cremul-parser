@@ -160,6 +160,8 @@ describe CremulParser do
 
     it 'should convert a non-utf-8 file to utf-8 on the fly' do
       @parser.parse(File.open('files/CREMUL0001.dat'), 'ISO-8859-1')
+      # @parser.parse(File.open('files/20150121_0925_02IB1__CREMUL.Dat'), 'ISO-8859-1')
+      # @parser.parse(File.open('files/20150302_0853_02IB1__CREMUL.DAT'), 'ISO-8859-1')
       @parser.segments.must_be_instance_of Array
       @parser.messages[0].must_be_instance_of CremulMessage
 
@@ -199,37 +201,33 @@ describe CremulParser do
       msg.lines[0].transactions[0].payer_account_number.must_be_nil
     end
 
-
-    # ----------------------------------------------------------------------
-    # the following tests are commented out as the corresponding cremul test file is not included in the Git repo
-    # ----------------------------------------------------------------------
-
-
-=begin
-    it 'should parse a long file with multiple payment transactions' do
-      @parser.parse(File.open('files/CREMUL0002_23-05-14.dat'), 'ISO-8859-1')
-      @parser.segments.must_be_instance_of Array
-      @parser.messages[0].must_be_instance_of CremulMessage
-
-      msg = @parser.messages[0]
-
-      froland_tx = msg.lines[1].transactions[1]
-      froland_tx.must_be_instance_of CremulPaymentTx
-      froland_tx.free_text.must_include 'kr 3.384.686,- Fradrag kr.106:.408,- Beregn.g.lag kr.3.278.2          78,-'
-
-      braekstad_tx = msg.lines[2].transactions[0]
-      braekstad_tx.invoice_ref.must_equal '20140453869'
-    end
-=end
-
-
     it 'should parse a multi-message file' do
-      @parser.parse(File.open('files/CREMUL_multi_message.dat'), 'ISO-8859-1')
+      filename = 'files/CREMUL_multi_message.dat'
+      @parser.parse(File.open(filename), 'ISO-8859-1')
       @parser.segments.must_be_instance_of Array
       @parser.messages.size.must_equal 3
       @parser.messages[0].must_be_instance_of CremulMessage
 
       #write_segments_to_file(@parser.segments, File.open('files/CREMUL_multi_message_segments.txt', 'w'))
+    end
+
+    it 'should print the Cremul-file to a CSV-file' do
+      # filename = 'files/2016/Trello91_CREMUL'
+      filename = 'files/CREMUL0003'
+      @parser.parse(File.open(filename + '.DAT'), 'ISO-8859-1')
+      @parser.to_csv_file(filename + '.csv')
+    end
+
+    it 'should pretty-print the file' do
+      # filename = 'files/20150302_0853_02IB1__CREMUL'
+      # filename = 'files/20150121_0925_02IB1__CREMUL'
+      # filename = 'files/20150413_0746_02IB1__CREMUL'
+      # filename = 'files/CREMUL_16-12-15'
+      # filename = 'files/2016/cremul'
+      # filename = 'files/2016/Trello91_CREMUL'
+      filename = 'files/CREMUL_multi_message'
+      @parser.parse(File.open(filename + '.DAT'), 'ISO-8859-1')
+      write_segments_to_file(@parser.segments, File.open(filename + '.txt', 'w'))
     end
 
     def write_segments_to_file(msg, file)
@@ -239,6 +237,25 @@ describe CremulParser do
         file.close
       end
     end
+
+    # ----------------------------------------------------------------------
+    # the following tests are commented out as the corresponding cremul test file is not included in the Git repo
+    # ----------------------------------------------------------------------
+
+    # it 'should parse a long file with multiple payment transactions' do
+    #   @parser.parse(File.open('files/CREMUL0002_23-05-14.dat'), 'ISO-8859-1')
+    #   @parser.segments.must_be_instance_of Array
+    #   @parser.messages[0].must_be_instance_of CremulMessage
+    #
+    #   msg = @parser.messages[0]
+    #
+    #   froland_tx = msg.lines[1].transactions[1]
+    #   froland_tx.must_be_instance_of CremulPaymentTx
+    #   froland_tx.free_text.must_include 'kr 3.384.686,- Fradrag kr.106:.408,- Beregn.g.lag kr.3.278.2          78,-'
+    #
+    #   braekstad_tx = msg.lines[2].transactions[0]
+    #   braekstad_tx.invoice_ref.must_equal '20140453869'
+    # end
 
 
     # ----------------------------------------------------------------------

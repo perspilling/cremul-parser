@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.0
+
+This library has been used successfully in production for a while now, so I decided it was ok to bump the
+version to 1.0.0. 
+
+- CremulParser.to_csv_file(csv_filename) : Converts a Cremul file to CSV.
+- CremulParser::get_file_hash_value(file) : Returns a unique MD5 hash value for a file
+- CremulParser.create_unique_tx_index(cremul_msg, cremul_msg_line, cremul_tx) : Creates a unique id for each TX in the file  
+
 ## 0.9.3
 
 Fixed an error related to logging when used in Rails.
