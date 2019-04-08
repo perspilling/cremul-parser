@@ -1,6 +1,7 @@
 # encoding: UTF-8
 
 require 'logger'
+require 'digest'
 require_relative 'cremul/parser_helper'
 require_relative 'cremul/cremul_message'
 

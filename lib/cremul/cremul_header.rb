@@ -1,4 +1,5 @@
 require_relative 'parser_helper'
+require 'date'
 
 class CremulHeader
   include Cremul::ParserHelper
